@@ -1,0 +1,6 @@
+.vscode
+bin
+obj
+*.db
+*.sqlite3
+DatingApp

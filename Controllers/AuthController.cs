@@ -3,6 +3,7 @@ using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
@@ -42,6 +43,7 @@ namespace RestApiDating.Controllers
         }
 
         [HttpPost("[action]")]
+        [AllowAnonymous]
         public async Task<IActionResult> Login(LoginDto dto)
         {
             var user = await _repository.Login(dto.Username, dto.Password);

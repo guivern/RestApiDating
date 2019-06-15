@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using RestApiDating.Data;
@@ -30,6 +31,7 @@ namespace RestApiDating.Controllers
 
         // GET api/values/5
         [HttpGet("{id}")]
+        [AllowAnonymous]
         public async Task<IActionResult> GetById(int id)
         {
             var value = await _context.Values.FirstOrDefaultAsync( x => x.Id == id);

@@ -16,6 +16,7 @@ namespace RestApiDating.Data
 
         public async Task<User> Login(string username, string password)
         {
+            username = username.ToLower();
             var user = await _context.Users
             .FirstOrDefaultAsync(u => u.Username.Equals(username));
 
@@ -26,7 +27,7 @@ namespace RestApiDating.Data
 
             return user;
         }
-
+        
         public async Task<User> Register(User user, string password)
         {
             byte[] passwordHash, passwordSalt;
@@ -40,7 +41,7 @@ namespace RestApiDating.Data
 
             return user;
         }
-
+        
         public async Task<bool> UserExits(string username)
         {
             return await _context.Users

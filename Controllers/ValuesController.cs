@@ -11,6 +11,7 @@ namespace RestApiDating.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    [AllowAnonymous]
     public class ValuesController : ControllerBase
     {
         private readonly DataContext _context;
@@ -31,7 +32,6 @@ namespace RestApiDating.Controllers
 
         // GET api/values/5
         [HttpGet("{id}")]
-        [AllowAnonymous]
         public async Task<IActionResult> GetById(int id)
         {
             var value = await _context.Values.FirstOrDefaultAsync( x => x.Id == id);

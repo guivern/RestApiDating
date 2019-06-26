@@ -15,7 +15,7 @@ namespace RestApiDating.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class AuthController: ControllerBase
+    public class AuthController : ControllerBase
     {
         private readonly IAuthRepository _repository;
         private readonly IConfiguration _configuration;
@@ -27,13 +27,17 @@ namespace RestApiDating.Controllers
         }
 
         [HttpPost("[action]")]
+        [AllowAnonymous]
         public async Task<IActionResult> Register(UserDto dto)
         {
             dto.Username = dto.Username.ToLower();
 
-            if(await _repository.UserExits(dto.Username))
-            return BadRequest("Ya existe el usuario");
-            
+            if (await _repository.UserExits(dto.Username))
+            {
+                ModelState.AddModelError(nameof(dto.Username), "Ya existe el usuario");
+                return BadRequest(ModelState);
+            }
+
             var user = new User();
             user.Username = dto.Username;
 
@@ -48,15 +52,15 @@ namespace RestApiDating.Controllers
         {
             var user = await _repository.Login(dto.Username, dto.Password);
 
-            if(user == null) return Unauthorized();
+            if (user == null) return Unauthorized();
 
-            return Ok(new {token = GenerateToken(user)});
+            return Ok(new { token = GenerateToken(user) });
         }
 
-        // genera un token para el usuario especificado
+        // genera un token para el usuario 
         private string GenerateToken(User user)
         {
-            var claims = new []
+            var claims = new[]
             {
                 new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()),
                 new Claim(ClaimTypes.Name, user.Username),

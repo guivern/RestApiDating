@@ -19,6 +19,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
+using Newtonsoft.Json;
 using RestApiDating.Data;
 using RestApiDating.Helpers;
 
@@ -36,10 +37,13 @@ namespace RestApiDating
         // Aquí se inyectan los servicios.
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
+            services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2)
+                // para evitar error de bucle de autoreferencia
+                .AddJsonOptions(opt => opt.SerializerSettings.ReferenceLoopHandling = ReferenceLoopHandling.Ignore);
             services.AddDbContext<DataContext>(x =>
                 x.UseSqlite(Configuration.GetConnectionString("DefaultConnection")));
             services.AddCors();
+
             // Add Jwt support
             services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
             .AddJwtBearer(op =>
@@ -52,6 +56,7 @@ namespace RestApiDating
                     ValidateAudience = false,
                 };
             });
+
             //-------- Filtro Jwt para los request --------
             services.AddMvc(config =>
             {
@@ -64,6 +69,7 @@ namespace RestApiDating
 
             // inyectamos los repositorios
             services.AddScoped<IAuthRepository, AuthRepository>();
+            services.AddScoped<IDatingRepository, DatingRepository>();
 
             // seed service
             services.AddTransient<Seed>();

@@ -4,6 +4,7 @@ using System.Linq;
 using System.Net;
 using System.Text;
 using System.Threading.Tasks;
+using AutoMapper;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Builder;
@@ -73,6 +74,9 @@ namespace RestApiDating
 
             // seed service
             services.AddTransient<Seed>();
+
+            // Automapper
+            services.AddAutoMapper();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -89,7 +93,7 @@ namespace RestApiDating
             }
 
             //app.UseHttpsRedirection();
-            seeder.SeedUsers();
+            //seeder.SeedUsers();
             app.UseCors(x => x
                 .AllowAnyOrigin()
                 .AllowAnyMethod()

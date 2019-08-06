@@ -1,3 +1,4 @@
+using System;
 using Microsoft.AspNetCore.Http;
 
 namespace RestApiDating.Helpers
@@ -9,6 +10,21 @@ namespace RestApiDating.Helpers
             response.Headers.Add("Application-Error", message);
             response.Headers.Add("Access-Control-Expose-Headers", "Application-Error");
             response.Headers.Add("Access-Control-Allow-Origin","*");
+        }
+
+        public static int CalcularEdad(this DateTime? fechaNacimiento)
+        {
+            if (fechaNacimiento != null)
+            {
+                var edad = DateTime.Today.Year - fechaNacimiento.Value.Year;
+                if (fechaNacimiento.Value.AddYears(edad) > DateTime.Today)
+                {
+                    edad = edad - 1;
+                } 
+                return edad;
+            }
+
+            return 0;
         }
     }
 }

@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Security.Cryptography;
 using System.Text;
 using Newtonsoft.Json;
@@ -18,6 +19,8 @@ namespace RestApiDating.Data
 
         public void SeedUsers()
         {
+            if(_context.Users.Any()) return;
+
             var userData = File.ReadAllText("Data/UserSeedData.json");
             var users = JsonConvert.DeserializeObject<List<User>>(userData);
 

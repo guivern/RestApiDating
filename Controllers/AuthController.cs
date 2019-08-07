@@ -75,7 +75,7 @@ namespace RestApiDating.Controllers
             var tokenDescriptor = new SecurityTokenDescriptor
             {
                 Subject = new ClaimsIdentity(claims),
-                Expires = DateTime.Now.AddDays(1), // el token expira en 24hs
+                Expires = DateTime.Now.AddDays(Double.Parse(_configuration.GetSection("Jwt:ExpireDays").Value)), // el token expira en 24hs
                 SigningCredentials = creds
             };
 

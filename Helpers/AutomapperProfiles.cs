@@ -10,12 +10,15 @@ namespace RestApiDating.Helpers
     {
         public AutomapperProfiles()
         {
+            // CreateMap<src, dest>()
+            // .ForMember(dest => dest.Prop, opt.MapFrom(src => src.Prop.Upper()));
             CreateMap<User, UserListDto>()
                 .ForMember(dest => dest.FotoUrl, opt => opt.MapFrom(src => PrincipalFotoUrl(src)))
                 .ForMember(dest => dest.Edad, opt => opt.MapFrom(src => CalcularEdad(src)));
             CreateMap<User, UserDetailDto>()
                 .ForMember(dest => dest.FotoUrl, opt => opt.MapFrom(src => PrincipalFotoUrl(src)))
                 .ForMember(dest => dest.Edad, opt => opt.MapFrom(src => CalcularEdad(src)));
+            CreateMap<UserUpdateDto, User>();
             CreateMap<Foto, FotoDto>();
         }
 

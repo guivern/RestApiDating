@@ -9,5 +9,6 @@ namespace RestApiDating.Dtos
         public string Descripcion { get; set; }
         public DateTime FechaCarga { get; set; }
         public bool EsPrincipal { get; set; }
+        public string IdPublico { get; set; }
     }
 }

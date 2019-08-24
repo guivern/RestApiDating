@@ -20,6 +20,7 @@ namespace RestApiDating.Helpers
                 .ForMember(dest => dest.Edad, opt => opt.MapFrom(src => CalcularEdad(src)));
             CreateMap<UserUpdateDto, User>();
             CreateMap<Foto, FotoDto>();
+            CreateMap<FotoCreateDto, Foto>();
         }
 
         #region custom mappings

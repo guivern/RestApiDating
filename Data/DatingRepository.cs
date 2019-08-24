@@ -24,15 +24,27 @@ namespace RestApiDating.Data
             _context.Remove(entity);
         }
 
+        public async Task<Foto> GetFoto(int id)
+        {
+            var foto = await _context.Fotos.SingleOrDefaultAsync(f => f.Id == id);
+            return foto;
+        }
+
         public async Task<User> GetUser(int id)
         {
-            var user = await _context.Users.Include(u => u.Fotos).FirstOrDefaultAsync(u => u.Id == id);
+            var user = await _context.Users
+            .Include(u => u.Fotos)
+            .FirstOrDefaultAsync(u => u.Id == id);
+            
             return user;
         }
 
         public async Task<IEnumerable<User>> GetUsers()
         {
-            var users = await _context.Users.Include(u => u.Fotos).ToListAsync();
+            var users = await _context.Users
+            .Include(u => u.Fotos)
+            .ToListAsync();
+            
             return users;
         }
 

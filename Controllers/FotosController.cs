@@ -81,6 +81,8 @@ namespace RestApiDating.Controllers
             foto.IdPublico = uploadResult.PublicId;
             // si es la primera foto, sera la principal
             foto.EsPrincipal = !user.Fotos.Any(f => f.EsPrincipal);
+            // foto.User = user;
+            // _repository.Add(foto);
 
             user.Fotos.Add(foto);
 

@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using RestApiDating.Models;
@@ -27,6 +28,12 @@ namespace RestApiDating.Data
         public async Task<Foto> GetFoto(int id)
         {
             var foto = await _context.Fotos.SingleOrDefaultAsync(f => f.Id == id);
+            return foto;
+        }
+
+        public async Task<Foto> GetFotoPrincipal(int userId)
+        {
+            var foto = await _context.Fotos.SingleOrDefaultAsync(f => f.UserId == userId && f.EsPrincipal);
             return foto;
         }
 

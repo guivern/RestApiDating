@@ -12,5 +12,6 @@ namespace RestApiDating.Data
         Task<IEnumerable<User>> GetUsers();
         Task<User> GetUser(int id);
         Task<Foto> GetFoto(int id);
+        Task<Foto> GetFotoPrincipal(int userId);
     }
 }

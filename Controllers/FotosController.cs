@@ -51,7 +51,7 @@ namespace RestApiDating.Controllers
         public async Task<IActionResult> AddFoto(int userId, [FromForm] FotoCreateDto dto)
         {
             // solo el usuario propietario puede editar su perfil
-            if (userId != int.Parse(User.FindFirst(ClaimTypes.NameIdentifier).Value))
+            if (!IsOwnerUser(userId))
                 return Unauthorized();
 
             var user = await _repository.GetUser(userId);
@@ -94,6 +94,40 @@ namespace RestApiDating.Controllers
             }
 
             return BadRequest("No se pudo subir la imagen");
+        }
+
+        [HttpPost("{id}/principal")]
+        public async Task<IActionResult> SetPrincipal(int userId, int id)
+        {
+            // solo el usuario propietario puede establecer su foto principal
+            if(!IsOwnerUser(userId)) 
+                return Unauthorized();
+            
+            var user = await _repository.GetUser(userId);
+            
+            // solo puede establecer una foto que le corresponte
+            if(!user.Fotos.Any(f => f.Id == id))
+                return Unauthorized();
+
+            var foto = await _repository.GetFoto(id);
+            if(foto.EsPrincipal) 
+                return BadRequest("La foto ya es principal");
+            
+            var fotoPrincipalActual = await _repository.GetFotoPrincipal(userId);
+            fotoPrincipalActual.EsPrincipal = false;
+
+            // nueva foto principal
+            foto.EsPrincipal = true;
+
+            if(await _repository.SaveAll())
+                return NoContent();
+            
+            return BadRequest("Ocurrió un error al intentar establecer la foto de perfil");
+        }
+
+        private bool IsOwnerUser(int userId)
+        {
+           return (userId == int.Parse(User.FindFirst(ClaimTypes.NameIdentifier).Value));
         }
     }
 }

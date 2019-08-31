@@ -18,6 +18,7 @@ namespace RestApiDating.Data
         {
             username = username.ToLower();
             var user = await _context.Users
+            .Include(u => u.Fotos)
             .FirstOrDefaultAsync(u => u.Username.Equals(username));
 
             if(user == null) return null;

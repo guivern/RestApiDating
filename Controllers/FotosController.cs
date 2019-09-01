@@ -76,7 +76,7 @@ namespace RestApiDating.Controllers
                 }
             }
 
-            var foto  = _mapper.Map<Foto>(dto);
+            var foto = _mapper.Map<Foto>(dto);
             foto.Url = uploadResult.Uri.ToString();
             foto.IdPublico = uploadResult.PublicId;
             // si es la primera foto, sera la principal
@@ -86,11 +86,11 @@ namespace RestApiDating.Controllers
 
             user.Fotos.Add(foto);
 
-            if(await _repository.SaveAll())
+            if (await _repository.SaveAll())
             {
                 // dto a retornar
                 var fotoDto = _mapper.Map<FotoDto>(foto);
-                return CreatedAtRoute("GetFoto", new {Id = foto.Id}, fotoDto);
+                return CreatedAtRoute("GetFoto", new { Id = foto.Id }, fotoDto);
             }
 
             return BadRequest("No se pudo subir la imagen");
@@ -100,34 +100,75 @@ namespace RestApiDating.Controllers
         public async Task<IActionResult> SetPrincipal(int userId, int id)
         {
             // solo el usuario propietario puede establecer su foto principal
-            if(!IsOwnerUser(userId)) 
+            if (!IsOwnerUser(userId))
                 return Unauthorized();
-            
+
             var user = await _repository.GetUser(userId);
-            
+
             // solo puede establecer una foto que le corresponte
-            if(!user.Fotos.Any(f => f.Id == id))
+            if (!user.Fotos.Any(f => f.Id == id))
                 return Unauthorized();
 
             var foto = await _repository.GetFoto(id);
-            if(foto.EsPrincipal) 
+            if (foto.EsPrincipal)
                 return BadRequest("La foto ya es principal");
-            
+
             var fotoPrincipalActual = await _repository.GetFotoPrincipal(userId);
             fotoPrincipalActual.EsPrincipal = false;
 
             // nueva foto principal
             foto.EsPrincipal = true;
 
-            if(await _repository.SaveAll())
+            if (await _repository.SaveAll())
                 return NoContent();
-            
+
             return BadRequest("Ocurrió un error al intentar establecer la foto de perfil");
+        }
+
+        [HttpDelete("{id}")]
+        public async Task<IActionResult> Delete(int userId, int id)
+        {
+            // el usuario logeado solo puede eliminar sus fotos
+            if (!IsOwnerUser(userId))
+                return Unauthorized();
+
+            var user = await _repository.GetUser(userId);
+
+            // solo puede eliminar si la foto es suya
+            if (!user.Fotos.Any(f => f.Id == id))
+                return Unauthorized();
+
+            var foto = await _repository.GetFoto(id);
+            if (foto.EsPrincipal)
+                return BadRequest("No se puede eliminar la foto principal");
+
+            if (foto.IdPublico != null)
+            {
+                // eliminamos la foto del cloudinary
+                var deleteParams = new DeletionParams(foto.IdPublico);
+                var deleteResult = _cloudinary.Destroy(deleteParams);
+
+                if (deleteResult.Result.Equals("ok"))
+                {
+                    _repository.Delete(foto);
+                }
+            }
+            else
+            {
+                _repository.Delete(foto);
+            }
+
+            if (await _repository.SaveAll())
+            {
+                return Ok();
+            }
+
+            return BadRequest("Ocurrio un error al intentar eliminar la foto");
         }
 
         private bool IsOwnerUser(int userId)
         {
-           return (userId == int.Parse(User.FindFirst(ClaimTypes.NameIdentifier).Value));
+            return (userId == int.Parse(User.FindFirst(ClaimTypes.NameIdentifier).Value));
         }
     }
 }

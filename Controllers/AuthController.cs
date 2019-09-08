@@ -31,22 +31,21 @@ namespace RestApiDating.Controllers
 
         [HttpPost("[action]")]
         [AllowAnonymous]
-        public async Task<IActionResult> Register(UserDto dto)
+        public async Task<IActionResult> Register(RegisterDto registerDto)
         {
-            dto.Username = dto.Username.ToLower();
+            registerDto.Username = registerDto.Username.ToLower();
+            var user = _mapper.Map<User>(registerDto);
 
-            if (await _repository.UserExits(dto.Username))
+            if (await _repository.UserExits(registerDto.Username))
             {
-                ModelState.AddModelError(nameof(dto.Username), "Ya existe el usuario");
+                ModelState.AddModelError(nameof(registerDto.Username), "Ya existe el usuario");
                 return BadRequest(ModelState);
             }
 
-            var user = new User();
-            user.Username = dto.Username;
+            var newUser = await _repository.Register(user, registerDto.Password);
+            var userDto = _mapper.Map<UserDetailDto>(newUser);
 
-            var newUser = await _repository.Register(user, dto.Password);
-
-            return StatusCode(201);
+            return CreatedAtRoute("GetUser", new { controller = "users", id = user.Id }, userDto);
         }
 
         [HttpPost("[action]")]

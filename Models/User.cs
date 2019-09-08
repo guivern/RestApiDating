@@ -14,7 +14,7 @@ namespace RestApiDating.Models
         public string Nombre { get; set; }
         public string Apellido { get; set; }
         public DateTime FechaCreacion { get; set; } = DateTime.Now;
-        public DateTime? UltimaConexion { get; set; }
+        public DateTime? UltimaConexion { get; set; } = DateTime.Now;
         public string Introduccion { get; set; }
         public string Buscando { get; set; }
         public string Intereses { get; set; }

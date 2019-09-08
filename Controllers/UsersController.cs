@@ -33,7 +33,7 @@ namespace RestApiDating.Controllers
             return Ok(usersDto);
         }
 
-        [HttpGet("{id}")]
+        [HttpGet("{id}", Name = "GetUser")]
         public async Task<IActionResult> GetById(int id)
         {
             var user = await _repository.GetUser(id);

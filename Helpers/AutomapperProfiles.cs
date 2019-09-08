@@ -21,11 +21,14 @@ namespace RestApiDating.Helpers
             CreateMap<UserUpdateDto, User>();
             CreateMap<Foto, FotoDto>();
             CreateMap<FotoCreateDto, Foto>();
+            CreateMap<RegisterDto, User>();
         }
 
         #region custom mappings
         private string PrincipalFotoUrl(User user)
         {
+            // para que esto funcione, hay que agregar un include 
+            // al momento de obtener el usuario para obtener las fotos 
             return user.Fotos.FirstOrDefault(f => f.EsPrincipal).Url;
         }
 

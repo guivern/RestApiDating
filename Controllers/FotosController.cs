@@ -168,6 +168,7 @@ namespace RestApiDating.Controllers
 
         private bool IsOwnerUser(int userId)
         {
+            // User obtiene los claims asociados con la acción que se está ejecutando.
             return (userId == int.Parse(User.FindFirst(ClaimTypes.NameIdentifier).Value));
         }
     }

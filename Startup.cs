@@ -69,6 +69,7 @@ namespace RestApiDating
             });
 
             // inyectamos los repositorios
+            // AddScoped crea una nueva instancia por cada request
             services.AddScoped<IAuthRepository, AuthRepository>();
             services.AddScoped<IDatingRepository, DatingRepository>();
 
@@ -80,6 +81,9 @@ namespace RestApiDating
 
             // Cloudinary
             services.Configure<CloudinarySettings>(Configuration.GetSection("Cloudinary"));
+
+            // Filter Action
+            services.AddScoped<LogUserActivity>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

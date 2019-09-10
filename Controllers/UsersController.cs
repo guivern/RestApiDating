@@ -6,12 +6,14 @@ using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
 using RestApiDating.Data;
 using RestApiDating.Dtos;
+using RestApiDating.Helpers;
 using RestApiDating.Models;
 
 namespace RestApiDating.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    [ServiceFilter(typeof(LogUserActivity))]
     public class UsersController : ControllerBase
     {
         private readonly IDatingRepository _repository;
@@ -21,7 +23,6 @@ namespace RestApiDating.Controllers
         {
             _mapper = mapper;
             _repository = repository;
-
         }
 
         [HttpGet]

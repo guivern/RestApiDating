@@ -40,8 +40,8 @@ namespace RestApiDating.Data
         public async Task<User> GetUser(int id)
         {
             var user = await _context.Users
-            .Include(u => u.Fotos)
-            .FirstOrDefaultAsync(u => u.Id == id);
+                .Include(u => u.Fotos)
+                .FirstOrDefaultAsync(u => u.Id == id);
             
             return user;
         }
@@ -49,8 +49,8 @@ namespace RestApiDating.Data
         public async Task<IEnumerable<User>> GetUsers()
         {
             var users = await _context.Users
-            .Include(u => u.Fotos)
-            .ToListAsync();
+                .Include(u => u.Fotos)
+                .ToListAsync();
             
             return users;
         }

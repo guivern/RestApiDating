@@ -4,6 +4,7 @@ using System.Security.Claims;
 using System.Threading.Tasks;
 using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
+using Newtonsoft.Json;
 using RestApiDating.Data;
 using RestApiDating.Dtos;
 using RestApiDating.Helpers;
@@ -26,10 +27,20 @@ namespace RestApiDating.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> GetAll()
+        public async Task<IActionResult> GetAll([FromQuery]UserParams userParams)
         {
-            var users = await _repository.GetUsers();
+            var users = await _repository.GetUsers(userParams);
             var usersDto = _mapper.Map<List<UserListDto>>(users);
+
+            var paginationHeader = new
+            {
+                currentPage = users.CurrentPage,
+                pageSize = users.PageSize,
+                totalCount = users.TotalCount,
+                totalPages = users.TotalPages,
+            };
+            
+            Response.Headers.Add("pagination", JsonConvert.SerializeObject(paginationHeader));
 
             return Ok(usersDto);
         }

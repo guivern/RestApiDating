@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
+using RestApiDating.Helpers;
 using RestApiDating.Models;
 
 namespace RestApiDating.Data
@@ -46,11 +47,11 @@ namespace RestApiDating.Data
             return user;
         }
 
-        public async Task<IEnumerable<User>> GetUsers()
+        public async Task<PagedList<User>> GetUsers(UserParams userParams)
         {
-            var users = await _context.Users
-                .Include(u => u.Fotos)
-                .ToListAsync();
+            var query = _context.Users.Include(u => u.Fotos);
+            PagedList<User> users = await PagedList<User>
+                .CreateAsync(query, userParams.PageNumber, userParams.PageSize);
             
             return users;
         }

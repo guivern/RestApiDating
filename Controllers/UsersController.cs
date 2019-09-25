@@ -32,15 +32,7 @@ namespace RestApiDating.Controllers
             var users = await _repository.GetUsers(userParams);
             var usersDto = _mapper.Map<List<UserListDto>>(users);
 
-            var paginationHeader = new
-            {
-                currentPage = users.CurrentPage,
-                pageSize = users.PageSize,
-                totalCount = users.TotalCount,
-                totalPages = users.TotalPages,
-            };
-            
-            Response.Headers.Add("pagination", JsonConvert.SerializeObject(paginationHeader));
+            Response.AddPagination(users.CurrentPage, users.PageSize, users.TotalCount, users.TotalPages);
 
             return Ok(usersDto);
         }

@@ -52,8 +52,10 @@ namespace RestApiDating.Data
         {
             var query = _context.Users.Include(u => u.Fotos).AsQueryable();
 
-            query = query.Where(u => u.Id != userParams.UserId);
-            query = query.Where(u => u.Genero.ToLower().Equals(userParams.Genero));
+            // para no incluir al usuario logueado
+            query = query.Where(u => u.Id != userParams.UserId); 
+            // para listar usuarios del sexo opuesto
+            query = query.Where(u => u.Genero.ToLower().Equals(userParams.Genero)); 
 
             // el siguiente calculo es necesario para filtrar por rango de edad
             // porque en la bd almacenamos la fecha de nacimiento y no la edad
@@ -62,6 +64,15 @@ namespace RestApiDating.Data
 
             query = query.Where(u => u.FechaNacimiento >= fechaNacMin 
                 && u.FechaNacimiento <= fechaNacMax);
+
+            if(!string.IsNullOrEmpty(userParams.OrderBy) && userParams.OrderBy.Equals("fechaCreacion"))
+            {
+                query = query.OrderByDescending(u => u.FechaCreacion);
+            }
+            else
+            {
+                query = query.OrderByDescending(u => u.UltimaConexion);
+            }
 
             PagedList<User> users = await PagedList<User>
                 .CreateAsync(query, userParams.PageNumber, userParams.PageSize);

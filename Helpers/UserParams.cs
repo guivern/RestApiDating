@@ -17,5 +17,6 @@ namespace RestApiDating.Helpers
         public string Genero { get; set; }
         public int EdadMin { get; set; } = 18;
         public int EdadMax { get; set; } = 99;
+        public string OrderBy { get; set; }
     }
 }

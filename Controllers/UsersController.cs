@@ -29,6 +29,15 @@ namespace RestApiDating.Controllers
         [HttpGet]
         public async Task<IActionResult> GetAll([FromQuery]UserParams userParams)
         {
+            userParams.UserId = int.Parse(User.FindFirst(ClaimTypes.NameIdentifier).Value);
+            var currentUser = await _repository.GetUser(userParams.UserId);
+
+            if(string.IsNullOrEmpty(userParams.Genero))
+            {
+                // por default filtramos por el sexo opuesto
+                userParams.Genero = currentUser.Genero.ToLower().Equals("hombre") ? "mujer" : "hombre";
+            }
+
             var users = await _repository.GetUsers(userParams);
             var usersDto = _mapper.Map<List<UserListDto>>(users);
 

@@ -13,6 +13,9 @@ namespace RestApiDating.Helpers
             get { return pageSize; }
             set { pageSize = (value > MAX_PAGE_SIZE) ? MAX_PAGE_SIZE : value; }
         }
-
+        public int UserId { get; set; }
+        public string Genero { get; set; }
+        public int EdadMin { get; set; } = 18;
+        public int EdadMax { get; set; } = 99;
     }
 }

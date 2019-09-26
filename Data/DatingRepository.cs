@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -49,7 +50,19 @@ namespace RestApiDating.Data
 
         public async Task<PagedList<User>> GetUsers(UserParams userParams)
         {
-            var query = _context.Users.Include(u => u.Fotos);
+            var query = _context.Users.Include(u => u.Fotos).AsQueryable();
+
+            query = query.Where(u => u.Id != userParams.UserId);
+            query = query.Where(u => u.Genero.ToLower().Equals(userParams.Genero));
+
+            // el siguiente calculo es necesario para filtrar por rango de edad
+            // porque en la bd almacenamos la fecha de nacimiento y no la edad
+            var fechaNacMin = DateTime.Today.AddYears(-userParams.EdadMax - 1);
+            var fechaNacMax = DateTime.Today.AddYears(-userParams.EdadMin);
+
+            query = query.Where(u => u.FechaNacimiento >= fechaNacMin 
+                && u.FechaNacimiento <= fechaNacMax);
+
             PagedList<User> users = await PagedList<User>
                 .CreateAsync(query, userParams.PageNumber, userParams.PageSize);
             

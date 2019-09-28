@@ -21,5 +21,7 @@ namespace RestApiDating.Models
         public string Ciudad { get; set; }
         public string Pais { get; set; }
         public ICollection<Foto> Fotos { get; set; }
+        public ICollection<Like> Likes { get; set; } // likes que dio el usuario
+        public ICollection<Like> Likers { get; set; } // likes que recibio el usuario
     }
 }

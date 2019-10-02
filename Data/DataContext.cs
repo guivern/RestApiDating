@@ -13,7 +13,7 @@ namespace RestApiDating.Data
         {
             // many to many relationship
             builder.Entity<Like>()
-                .HasKey(l => new{l.LikerId, l.LikedId});
+                .HasKey(l => new { l.LikerId, l.LikedId });
             builder.Entity<Like>()
                 .HasOne(l => l.Liker)
                 .WithMany(l => l.Likes)

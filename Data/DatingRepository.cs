@@ -35,8 +35,16 @@ namespace RestApiDating.Data
 
         public async Task<Foto> GetFotoPrincipal(int userId)
         {
-            var foto = await _context.Fotos.SingleOrDefaultAsync(f => f.UserId == userId && f.EsPrincipal);
+            var foto = await _context.Fotos.SingleOrDefaultAsync(f => f.UserId == userId 
+                && f.EsPrincipal);
             return foto;
+        }
+
+        public async Task<Like> GetLike(int likerId, int likedId)
+        {
+            var like = await _context.Likes.FirstOrDefaultAsync(l => l.LikedId == likedId 
+                && l.LikedId == likedId);
+            return like;
         }
 
         public async Task<User> GetUser(int id)

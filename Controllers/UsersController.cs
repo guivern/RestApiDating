@@ -70,6 +70,33 @@ namespace RestApiDating.Controllers
             throw new Exception($"Error al intentar actualizar el usuario {id}");
         }
 
+        [HttpPost("{id}/like/{likedId}")]
+        public async Task<IActionResult> Like(int id, int likedId)
+        {
+            var tokenUserId = int.Parse(User.FindFirst(ClaimTypes.NameIdentifier).Value);
+            if(id != tokenUserId) return Unauthorized();
+
+            if(id == likedId) return BadRequest();
+            
+            var like = await _repository.GetLike(id, likedId);
+            if(like != null) return BadRequest("Ya has dado like a este usuario");
+
+            var userLiked = await _repository.GetUser(likedId);
+            if(userLiked == null) return BadRequest("No existe el usuario");
+
+            var newLike = new Like()
+            {
+                LikerId = id,
+                LikedId = likedId
+            };
+
+            _repository.Add<Like>(newLike);
+
+            if(await _repository.SaveAll()) return Ok();
+
+            return BadRequest("Ocurrió un error");
+        }
+
         [HttpGet("current")]
         public IActionResult GetCurrentUserId()
         {

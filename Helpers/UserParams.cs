@@ -18,5 +18,7 @@ namespace RestApiDating.Helpers
         public int EdadMin { get; set; } = 18;
         public int EdadMax { get; set; } = 99;
         public string OrderBy { get; set; }
+        public bool Likes { get; set; }
+        public bool Likers { get; set; }
     }
 }

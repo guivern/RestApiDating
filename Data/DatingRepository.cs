@@ -65,6 +65,18 @@ namespace RestApiDating.Data
             // para listar usuarios del sexo opuesto
             query = query.Where(u => u.Genero.ToLower().Equals(userParams.Genero)); 
 
+            if(userParams.Likes)
+            {
+                var userLikes = await GetUserLikesIdList(userParams.UserId);
+                query = query.Where(u => userLikes.Contains(u.Id));
+            }
+
+            if(userParams.Likers)
+            {
+                var userLikers = await GetUserLikersIdList(userParams.UserId);
+                query = query.Where(u => userLikers.Contains(u.Id));
+            }
+
             // el siguiente calculo es necesario para filtrar por rango de edad
             // porque en la bd almacenamos la fecha de nacimiento y no la edad
             var fechaNacMin = DateTime.Today.AddYears(-userParams.EdadMax - 1);
@@ -92,6 +104,36 @@ namespace RestApiDating.Data
         {
             // retorna 0 si no pudo guardar ningun cambio 
             return await _context.SaveChangesAsync() > 0;
+        }
+        
+        /// <summary>
+        /// Obtiene una lista de ids de usuarios que le gustan a userId
+        /// </summary>
+        /// <param name="userId"></param>
+        /// <returns></returns>
+        private async Task<IEnumerable<int>> GetUserLikesIdList(int userId)
+        {
+            var likes = await _context.Likes
+                .Where(l => l.LikerId == userId)
+                .Select(l => l.LikedId)
+                .ToListAsync();
+                
+            return likes;
+        }
+
+        /// <summary>
+        /// Obtiene una lista de ids de usuarios que dieron like a userId
+        /// </summary>
+        /// <param name="userId"></param>
+        /// <returns></returns>
+        private async Task<IEnumerable<int>> GetUserLikersIdList(int userId)
+        {
+            var likers = await _context.Likes
+                .Where(l => l.LikedId == userId)
+                .Select(l => l.LikerId)
+                .ToListAsync();
+                
+            return likers;
         }
     }
 }

@@ -22,6 +22,11 @@ namespace RestApiDating.Helpers
             CreateMap<Foto, FotoDto>();
             CreateMap<FotoCreateDto, Foto>();
             CreateMap<RegisterDto, User>();
+            CreateMap<MensajeCreateDto, Mensaje>()
+                .ForMember(dest => dest.FechaEnvio, opt => opt.UseValue(DateTime.Now));
+            CreateMap<Mensaje, MensajeDetailDto>()
+                .ForMember(dest => dest.Emisor, opt => opt.MapFrom(src => src.Emisor.Nombre))
+                .ForMember(dest => dest.Receptor, opt => opt.MapFrom(src => src.Receptor.Nombre));
         }
 
         #region custom mappings
@@ -41,7 +46,7 @@ namespace RestApiDating.Helpers
                 if (fechaNacimiento.Value.AddYears(edad) > DateTime.Today)
                 {
                     edad--;
-                } 
+                }
                 return edad;
             }
 

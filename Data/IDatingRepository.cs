@@ -15,5 +15,8 @@ namespace RestApiDating.Data
         Task<Foto> GetFoto(int id);
         Task<Foto> GetFotoPrincipal(int userId);
         Task<Like> GetLike(int likerId, int likedId);
+        Task<Mensaje> GetMensaje(int id);
+        Task<PagedList<Mensaje>> GetMensajesParaUsuario();
+        Task<IEnumerable<Mensaje>> GetHiloMensaje();
     }
 }

@@ -23,5 +23,7 @@ namespace RestApiDating.Models
         public ICollection<Foto> Fotos { get; set; }
         public ICollection<Like> Likes { get; set; } // likes que dio el usuario
         public ICollection<Like> Likers { get; set; } // likes que recibio el usuario
+        public ICollection<Mensaje> MensajesEnviados { get; set; }
+        public ICollection<Mensaje> MensajesRecibidos { get; set; }
     }
 }

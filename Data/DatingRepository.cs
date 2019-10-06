@@ -29,31 +29,26 @@ namespace RestApiDating.Data
 
         public async Task<Foto> GetFoto(int id)
         {
-            var foto = await _context.Fotos.SingleOrDefaultAsync(f => f.Id == id);
-            return foto;
+            return await _context.Fotos.SingleOrDefaultAsync(f => f.Id == id);
         }
 
         public async Task<Foto> GetFotoPrincipal(int userId)
         {
-            var foto = await _context.Fotos.SingleOrDefaultAsync(f => f.UserId == userId 
-                && f.EsPrincipal);
-            return foto;
+            return await _context.Fotos
+                .SingleOrDefaultAsync(f => f.UserId == userId && f.EsPrincipal);
         }
 
         public async Task<Like> GetLike(int likerId, int likedId)
         {
-            var like = await _context.Likes.FirstOrDefaultAsync(l => l.LikedId == likedId 
-                && l.LikedId == likedId);
-            return like;
+            return await _context.Likes
+                .FirstOrDefaultAsync(l => l.LikedId == likedId && l.LikedId == likedId);
         }
 
         public async Task<User> GetUser(int id)
         {
-            var user = await _context.Users
+            return await _context.Users
                 .Include(u => u.Fotos)
                 .FirstOrDefaultAsync(u => u.Id == id);
-            
-            return user;
         }
 
         public async Task<PagedList<User>> GetUsers(UserParams userParams)
@@ -61,17 +56,17 @@ namespace RestApiDating.Data
             var query = _context.Users.Include(u => u.Fotos).AsQueryable();
 
             // para no incluir al usuario logueado
-            query = query.Where(u => u.Id != userParams.UserId); 
+            query = query.Where(u => u.Id != userParams.UserId);
             // para listar usuarios del sexo opuesto
-            query = query.Where(u => u.Genero.ToLower().Equals(userParams.Genero)); 
+            query = query.Where(u => u.Genero.ToLower().Equals(userParams.Genero));
 
-            if(userParams.Likes)
+            if (userParams.Likes)
             {
                 var userLikes = await GetUserLikesIdList(userParams.UserId);
                 query = query.Where(u => userLikes.Contains(u.Id));
             }
 
-            if(userParams.Likers)
+            if (userParams.Likers)
             {
                 var userLikers = await GetUserLikersIdList(userParams.UserId);
                 query = query.Where(u => userLikers.Contains(u.Id));
@@ -82,10 +77,10 @@ namespace RestApiDating.Data
             var fechaNacMin = DateTime.Today.AddYears(-userParams.EdadMax - 1);
             var fechaNacMax = DateTime.Today.AddYears(-userParams.EdadMin);
 
-            query = query.Where(u => u.FechaNacimiento >= fechaNacMin 
+            query = query.Where(u => u.FechaNacimiento >= fechaNacMin
                 && u.FechaNacimiento <= fechaNacMax);
 
-            if(!string.IsNullOrEmpty(userParams.OrderBy) && userParams.OrderBy.Equals("fechaCreacion"))
+            if (!string.IsNullOrEmpty(userParams.OrderBy) && userParams.OrderBy.Equals("fechaCreacion"))
             {
                 query = query.OrderByDescending(u => u.FechaCreacion);
             }
@@ -96,7 +91,7 @@ namespace RestApiDating.Data
 
             PagedList<User> users = await PagedList<User>
                 .CreateAsync(query, userParams.PageNumber, userParams.PageSize);
-            
+
             return users;
         }
 
@@ -105,7 +100,7 @@ namespace RestApiDating.Data
             // retorna 0 si no pudo guardar ningun cambio 
             return await _context.SaveChangesAsync() > 0;
         }
-        
+
         /// <summary>
         /// Obtiene una lista de ids de usuarios que le gustan a userId
         /// </summary>
@@ -113,12 +108,10 @@ namespace RestApiDating.Data
         /// <returns></returns>
         private async Task<IEnumerable<int>> GetUserLikesIdList(int userId)
         {
-            var likes = await _context.Likes
+            return await _context.Likes
                 .Where(l => l.LikerId == userId)
                 .Select(l => l.LikedId)
                 .ToListAsync();
-                
-            return likes;
         }
 
         /// <summary>
@@ -128,12 +121,28 @@ namespace RestApiDating.Data
         /// <returns></returns>
         private async Task<IEnumerable<int>> GetUserLikersIdList(int userId)
         {
-            var likers = await _context.Likes
+            return await _context.Likes
                 .Where(l => l.LikedId == userId)
                 .Select(l => l.LikerId)
                 .ToListAsync();
-                
-            return likers;
+        }
+
+        public async Task<Mensaje> GetMensaje(int id)
+        {
+            return await _context.Mensajes
+                .Include(m => m.Emisor)
+                .Include(m => m.Receptor)
+                .SingleOrDefaultAsync(m => m.Id == id);
+        }
+
+        public Task<PagedList<Mensaje>> GetMensajesParaUsuario()
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<IEnumerable<Mensaje>> GetHiloMensaje()
+        {
+            throw new NotImplementedException();
         }
     }
 }

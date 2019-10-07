@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Security.Claims;
 using System.Threading.Tasks;
 using AutoMapper;
@@ -34,6 +35,22 @@ namespace RestApiDating.Controllers
             if (mensaje == null) return NotFound();
 
             var dto = _mapper.Map<MensajeDetailDto>(mensaje);
+
+            return Ok(dto);
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> GetMensajes(int userId, [FromQuery] MensajesParams mensajesParams)
+        {
+            if (!IsValidUser(userId)) return Unauthorized();
+
+            mensajesParams.UserId = userId;
+
+            var mensajes = await _repository.GetMensajesForUser(mensajesParams);
+
+            var dto = _mapper.Map<List<MensajeDetailDto>>(mensajes);
+
+            Response.AddPagination(mensajes.CurrentPage, mensajes.PageSize, mensajes.TotalCount, mensajes.TotalPages);
 
             return Ok(dto);
         }

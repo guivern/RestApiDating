@@ -25,8 +25,12 @@ namespace RestApiDating.Helpers
             CreateMap<MensajeCreateDto, Mensaje>()
                 .ForMember(dest => dest.FechaEnvio, opt => opt.UseValue(DateTime.Now));
             CreateMap<Mensaje, MensajeDetailDto>()
-                .ForMember(dest => dest.Emisor, opt => opt.MapFrom(src => src.Emisor.Nombre))
-                .ForMember(dest => dest.Receptor, opt => opt.MapFrom(src => src.Receptor.Nombre));
+                .ForMember(dest => dest.FotoEmisorUrl, opt => opt
+                    .MapFrom(src => src.Emisor.Fotos.FirstOrDefault(f => f.EsPrincipal).Url))
+                .ForMember(dest => dest.FotoReceptorUrl, opt => opt
+                    .MapFrom(src => src.Receptor.Fotos.FirstOrDefault(f => f.EsPrincipal).Url));
+            // .ForMember(dest => dest.Emisor, opt => opt.MapFrom(src => src.Emisor.Nombre))
+            // .ForMember(dest => dest.Receptor, opt => opt.MapFrom(src => src.Receptor.Nombre));
         }
 
         #region custom mappings

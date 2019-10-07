@@ -135,9 +135,31 @@ namespace RestApiDating.Data
                 .SingleOrDefaultAsync(m => m.Id == id);
         }
 
-        public Task<PagedList<Mensaje>> GetMensajesParaUsuario()
+        public async Task<PagedList<Mensaje>> GetMensajesForUser(MensajesParams mensajesParams)
         {
-            throw new NotImplementedException();
+            var query = _context.Mensajes
+                .Include(m => m.Emisor).ThenInclude(u => u.Fotos)
+                .Include(m => m.Receptor).ThenInclude(u => u.Fotos)
+                .AsQueryable();
+
+            switch (mensajesParams.Buzon?.ToLower())
+            {
+                case "entrada":
+                    query = query.Where(m => m.ReceptorId == mensajesParams.UserId);
+                    break;
+                case "salida":
+                    query = query.Where(m => m.EmisorId == mensajesParams.UserId);
+                    break;
+                default: // retornamos los mensajes no leidos
+                    query = query.Where(m => m.ReceptorId == mensajesParams.UserId 
+                        && !m.HaSidoLeido);
+                    break;
+            }
+
+            query = query.OrderByDescending(m => m.FechaEnvio);
+
+            return await PagedList<Mensaje>.CreateAsync(query, mensajesParams.PageNumber, mensajesParams.PageSize);
+
         }
 
         public Task<IEnumerable<Mensaje>> GetHiloMensaje()

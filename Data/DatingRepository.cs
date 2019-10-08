@@ -162,9 +162,18 @@ namespace RestApiDating.Data
 
         }
 
-        public Task<IEnumerable<Mensaje>> GetHiloMensaje()
+        public async Task<IEnumerable<Mensaje>> GetConversacion(int emisorId, int receptorId)
         {
-            throw new NotImplementedException();
+             var conversacion = await _context.Mensajes
+                .Include(m => m.Emisor).ThenInclude(u => u.Fotos)
+                .Include(m => m.Receptor).ThenInclude(u => u.Fotos)
+                // en una conversacion tanto emisor como receptor pueden intercambiar roles
+                .Where(m => m.EmisorId == emisorId && m.ReceptorId == receptorId
+                    || m.EmisorId == receptorId && m.ReceptorId == emisorId)
+                .OrderByDescending(m => m.FechaEnvio)
+                .ToListAsync();
+
+            return conversacion;
         }
     }
 }

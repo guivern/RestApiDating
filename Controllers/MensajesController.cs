@@ -55,6 +55,18 @@ namespace RestApiDating.Controllers
             return Ok(dto);
         }
 
+        [HttpGet("conversacion/{receptorId}")]
+        public async Task<IActionResult> GetConversacion(int userId, int receptorId)
+        {
+            if (!IsValidUser(userId)) return Unauthorized();
+
+            var mensajes = await _repository.GetConversacion(userId, receptorId);
+
+            var dto = _mapper.Map<IEnumerable<MensajeDetailDto>>(mensajes);
+
+            return Ok(dto);
+        }
+
         [HttpPost]
         public async Task<IActionResult> Create(int userId, MensajeCreateDto dto)
         {
@@ -77,6 +89,11 @@ namespace RestApiDating.Controllers
             throw new Exception("Ocurrio un error al intentar enviar el mensaje");
         }
 
+        /// <summary>
+        /// Verifica si userId es igual a userId del usuario logeado 
+        /// /// </summary>
+        /// <param name="userId"></param>
+        /// <returns></returns>
         private bool IsValidUser(int userId)
         {
             var userLoggedId = int.Parse(User.FindFirst(ClaimTypes.NameIdentifier).Value);

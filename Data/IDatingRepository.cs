@@ -17,6 +17,6 @@ namespace RestApiDating.Data
         Task<Like> GetLike(int likerId, int likedId);
         Task<Mensaje> GetMensaje(int id);
         Task<PagedList<Mensaje>> GetMensajesForUser(MensajesParams msjParams);
-        Task<IEnumerable<Mensaje>> GetHiloMensaje();
+        Task<IEnumerable<Mensaje>> GetConversacion(int emisorId, int receptorId);
     }
 }

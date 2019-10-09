@@ -170,7 +170,7 @@ namespace RestApiDating.Data
                 // en una conversacion tanto emisor como receptor pueden intercambiar roles
                 .Where(m => m.EmisorId == emisorId && m.ReceptorId == receptorId
                     || m.EmisorId == receptorId && m.ReceptorId == emisorId)
-                .OrderByDescending(m => m.FechaEnvio)
+                .OrderByDescending(m => m.Id)
                 .ToListAsync();
 
             return conversacion;

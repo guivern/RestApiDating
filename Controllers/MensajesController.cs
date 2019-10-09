@@ -72,6 +72,7 @@ namespace RestApiDating.Controllers
         {
             if (!IsValidUser(userId)) return Unauthorized();
 
+            var emisor =  await _repository.GetUser(userId);
             var receptor = await _repository.GetUser(dto.ReceptorId);
             if (receptor == null) return BadRequest("No existe el usuario receptor");
 

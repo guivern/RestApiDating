@@ -22,8 +22,7 @@ namespace RestApiDating.Helpers
             CreateMap<Foto, FotoDto>();
             CreateMap<FotoCreateDto, Foto>();
             CreateMap<RegisterDto, User>();
-            CreateMap<MensajeCreateDto, Mensaje>()
-                .ForMember(dest => dest.FechaEnvio, opt => opt.UseValue(DateTime.Now));
+            CreateMap<MensajeCreateDto, Mensaje>();
             CreateMap<Mensaje, MensajeDetailDto>()
                 .ForMember(dest => dest.FotoEmisorUrl, opt => opt
                     .MapFrom(src => src.Emisor.Fotos.FirstOrDefault(f => f.EsPrincipal).Url))

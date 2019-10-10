@@ -145,13 +145,16 @@ namespace RestApiDating.Data
             switch (mensajesParams.Buzon?.ToLower())
             {
                 case "entrada":
-                    query = query.Where(m => m.ReceptorId == mensajesParams.UserId);
+                    query = query.Where(m => m.ReceptorId == mensajesParams.UserId
+                        && !m.HaSidoEliminadoPorReceptor);
                     break;
                 case "salida":
-                    query = query.Where(m => m.EmisorId == mensajesParams.UserId);
+                    query = query.Where(m => m.EmisorId == mensajesParams.UserId
+                        && !m.HaSidoEliminadoPorEmisor);
                     break;
                 default: // retornamos los mensajes no leidos
-                    query = query.Where(m => m.ReceptorId == mensajesParams.UserId 
+                    query = query.Where(m => m.ReceptorId == mensajesParams.UserId
+                        && !m.HaSidoEliminadoPorReceptor
                         && !m.HaSidoLeido);
                     break;
             }
@@ -164,14 +167,18 @@ namespace RestApiDating.Data
 
         public async Task<IEnumerable<Mensaje>> GetConversacion(int emisorId, int receptorId)
         {
-             var conversacion = await _context.Mensajes
-                .Include(m => m.Emisor).ThenInclude(u => u.Fotos)
-                .Include(m => m.Receptor).ThenInclude(u => u.Fotos)
-                // en una conversacion tanto emisor como receptor pueden intercambiar roles
-                .Where(m => m.EmisorId == emisorId && m.ReceptorId == receptorId
-                    || m.EmisorId == receptorId && m.ReceptorId == emisorId)
-                .OrderByDescending(m => m.Id)
-                .ToListAsync();
+            var conversacion = await _context.Mensajes
+               .Include(m => m.Emisor).ThenInclude(u => u.Fotos)
+               .Include(m => m.Receptor).ThenInclude(u => u.Fotos)
+               // en una conversacion tanto emisor como receptor pueden intercambiar roles
+               .Where(m => (m.EmisorId == emisorId
+                   && m.ReceptorId == receptorId
+                   && !m.HaSidoEliminadoPorEmisor)
+                   || (m.EmisorId == receptorId
+                   && m.ReceptorId == emisorId
+                   && !m.HaSidoEliminadoPorReceptor))
+               .OrderByDescending(m => m.Id)
+               .ToListAsync();
 
             return conversacion;
         }

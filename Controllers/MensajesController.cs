@@ -72,7 +72,7 @@ namespace RestApiDating.Controllers
         {
             if (!IsValidUser(userId)) return Unauthorized();
 
-            var emisor =  await _repository.GetUser(userId);
+            var emisor = await _repository.GetUser(userId);
             var receptor = await _repository.GetUser(dto.ReceptorId);
             if (receptor == null) return BadRequest("No existe el usuario receptor");
 
@@ -88,6 +88,29 @@ namespace RestApiDating.Controllers
             }
 
             throw new Exception("Ocurrio un error al intentar enviar el mensaje");
+        }
+
+        [HttpPost("{id}")]
+        public async Task<IActionResult> Delete(int id, int userId)
+        {
+            if (!IsValidUser(userId)) return Unauthorized();
+
+            var mensaje = await _repository.GetMensaje(id);
+
+            if (mensaje.EmisorId == userId)
+                mensaje.HaSidoEliminadoPorEmisor = true;
+
+            if (mensaje.ReceptorId == userId)
+                mensaje.HaSidoEliminadoPorReceptor = true;
+
+            if (mensaje.HaSidoEliminadoPorEmisor && mensaje.HaSidoEliminadoPorReceptor)
+                _repository.Delete<Mensaje>(mensaje);
+
+            if(await _repository.SaveAll())
+                return NoContent();
+
+            throw new Exception("Error al intentar eliminar el mensaje");
+
         }
 
         /// <summary>

@@ -100,13 +100,22 @@ namespace RestApiDating
             }
 
             //app.UseHttpsRedirection();
-            //seeder.SeedUsers();
+            seeder.SeedUsers();
             app.UseCors(x => x
                 .AllowAnyOrigin()
                 .AllowAnyMethod()
                 .AllowAnyHeader());
             app.UseAuthentication();
-            app.UseMvc();
+            app.UseDefaultFiles(); // para servir los archivos del frontend
+            app.UseStaticFiles(); // para servir los archivos del wwwroot (frontend)
+            // para que la API pueda resolver las rutas del frontend
+            app.UseMvc(routes =>
+            {
+                routes.MapSpaFallbackRoute(
+                  name: "spa-fallback",
+                  defaults: new { controller = "Home", action = "Index" }
+                );
+            });
         }
 
         // manejador global de excepciones

@@ -1,6 +1,11 @@
+# archivos propios de visual studio code
 .vscode
+# las dependencias se pueden descargar con: dotnet restore
 bin
 obj
+# bd sqlite solo para desarrollo
 *.db
 *.sqlite3
 DatingApp
+# los archivos del frontend pueden ser generados con: ng build
+wwwroot

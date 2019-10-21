@@ -41,8 +41,11 @@ namespace RestApiDating
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2)
                 // para evitar error de bucle de autoreferencia
                 .AddJsonOptions(opt => opt.SerializerSettings.ReferenceLoopHandling = ReferenceLoopHandling.Ignore);
+                
             services.AddDbContext<DataContext>(x =>
-                x.UseSqlite(Configuration.GetConnectionString("DefaultConnection")));
+                x.UseNpgsql(Configuration.GetConnectionString("DefaultConnection")));
+            
+            // CORS
             services.AddCors();
 
             // Add Jwt support

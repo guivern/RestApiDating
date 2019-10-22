@@ -42,8 +42,13 @@ namespace RestApiDating
                 // para evitar error de bucle de autoreferencia
                 .AddJsonOptions(opt => opt.SerializerSettings.ReferenceLoopHandling = ReferenceLoopHandling.Ignore);
                 
-            services.AddDbContext<DataContext>(x =>
-                x.UseNpgsql(Configuration.GetConnectionString("DefaultConnection")));
+            services.AddDbContext<DataContext>(x => {
+                // UseLazyLoadingProxies() carga las entidades relacionadas automaticamente
+                // con esto ya no es necesario utilizar el metodo include()
+                // pero es necesario agregar 'virtual' a las propiedades relacionales
+                x.UseLazyLoadingProxies();
+                x.UseNpgsql(Configuration.GetConnectionString("DefaultConnection"));
+            });
             
             // CORS
             services.AddCors();

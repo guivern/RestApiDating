@@ -7,8 +7,8 @@ namespace RestApiDating.Models
         public int Id { get; set; }
         public int EmisorId { get; set; }
         public int ReceptorId { get; set; }
-        public User Emisor { get; set; }
-        public User Receptor { get; set; }
+        public virtual User Emisor { get; set; }
+        public virtual User Receptor { get; set; }
         public string Contenido { get; set; }
         public DateTime FechaEnvio { get; set; }
         public DateTime? FechaLectura { get; set; }

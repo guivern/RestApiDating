@@ -12,7 +12,7 @@ namespace RestApiDating.Models
         public string IdPublico { get; set; }
         // relcionaes EF por convencion
         // por default son onDeleteCascade
-        public User User { get; set; }
+        public virtual User User { get; set; }
         public int UserId { get; set; }
     }
 }

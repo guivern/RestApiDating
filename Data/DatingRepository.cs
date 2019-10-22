@@ -46,14 +46,12 @@ namespace RestApiDating.Data
 
         public async Task<User> GetUser(int id)
         {
-            return await _context.Users
-                .Include(u => u.Fotos)
-                .FirstOrDefaultAsync(u => u.Id == id);
+            return await _context.Users.FirstOrDefaultAsync(u => u.Id == id);
         }
 
         public async Task<PagedList<User>> GetUsers(UserParams userParams)
         {
-            var query = _context.Users.Include(u => u.Fotos).AsQueryable();
+            var query = _context.Users.AsQueryable();
 
             // para no incluir al usuario logueado
             query = query.Where(u => u.Id != userParams.UserId);
@@ -129,18 +127,12 @@ namespace RestApiDating.Data
 
         public async Task<Mensaje> GetMensaje(int id)
         {
-            return await _context.Mensajes
-                .Include(m => m.Emisor)
-                .Include(m => m.Receptor)
-                .SingleOrDefaultAsync(m => m.Id == id);
+            return await _context.Mensajes.SingleOrDefaultAsync(m => m.Id == id);
         }
 
         public async Task<PagedList<Mensaje>> GetMensajesForUser(MensajesParams mensajesParams)
         {
-            var query = _context.Mensajes
-                .Include(m => m.Emisor).ThenInclude(u => u.Fotos)
-                .Include(m => m.Receptor).ThenInclude(u => u.Fotos)
-                .AsQueryable();
+            var query = _context.Mensajes.AsQueryable();
 
             switch (mensajesParams.Buzon?.ToLower())
             {
@@ -168,8 +160,6 @@ namespace RestApiDating.Data
         public async Task<IEnumerable<Mensaje>> GetConversacion(int emisorId, int receptorId)
         {
             var conversacion = await _context.Mensajes
-               .Include(m => m.Emisor).ThenInclude(u => u.Fotos)
-               .Include(m => m.Receptor).ThenInclude(u => u.Fotos)
                // en una conversacion tanto emisor como receptor pueden intercambiar roles
                .Where(m => (m.EmisorId == emisorId
                    && m.ReceptorId == receptorId

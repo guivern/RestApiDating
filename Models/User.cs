@@ -20,10 +20,10 @@ namespace RestApiDating.Models
         public string Intereses { get; set; }
         public string Ciudad { get; set; }
         public string Pais { get; set; }
-        public ICollection<Foto> Fotos { get; set; }
-        public ICollection<Like> Likes { get; set; } // likes que dio el usuario
-        public ICollection<Like> Likers { get; set; } // likes que recibio el usuario
-        public ICollection<Mensaje> MensajesEnviados { get; set; }
-        public ICollection<Mensaje> MensajesRecibidos { get; set; }
+        public virtual ICollection<Foto> Fotos { get; set; }
+        public virtual ICollection<Like> Likes { get; set; } // likes que dio el usuario
+        public virtual ICollection<Like> Likers { get; set; } // likes que recibio el usuario
+        public virtual ICollection<Mensaje> MensajesEnviados { get; set; }
+        public virtual ICollection<Mensaje> MensajesRecibidos { get; set; }
     }
 }

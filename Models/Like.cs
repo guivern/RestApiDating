@@ -4,7 +4,7 @@ namespace RestApiDating.Models
     {
         public int LikerId { get; set; } // usuario que da like
         public int LikedId { get; set; } // usuario que recibe like
-        public User Liker { get; set; }
-        public User Liked { get; set; }
+        public virtual User Liker { get; set; }
+        public virtual User Liked { get; set; }
     }
 }

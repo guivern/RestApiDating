@@ -41,7 +41,7 @@ namespace RestApiDating.Data
         public async Task<Like> GetLike(int likerId, int likedId)
         {
             return await _context.Likes
-                .FirstOrDefaultAsync(l => l.LikedId == likedId && l.LikedId == likedId);
+                .FirstOrDefaultAsync(l => l.LikerId == likerId && l.LikedId == likedId);
         }
 
         public async Task<User> GetUser(int id)

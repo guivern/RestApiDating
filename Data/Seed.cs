@@ -8,18 +8,11 @@ using RestApiDating.Models;
 
 namespace RestApiDating.Data
 {
-    public class Seed
+    public static class Seed
     {
-        private readonly DataContext _context;
-
-        public Seed(DataContext context)
+        public static void SeedUsers(DataContext context)
         {
-            _context = context;
-        }
-
-        public void SeedUsers()
-        {
-            if(_context.Users.Any()) return;
+            if(context.Users.Any()) return;
 
             var userData = File.ReadAllText("Data/UserSeedData.json");
             var users = JsonConvert.DeserializeObject<List<User>>(userData);
@@ -33,13 +26,13 @@ namespace RestApiDating.Data
                 user.PasswordSalt = passwordSalt;
                 user.Username = user.Username.ToLower();
 
-                _context.Add(user);
+                context.Add(user);
             }
 
-            _context.SaveChanges();
+            context.SaveChanges();
         }
 
-        private void CreatePasswordHash(string password, out byte[] passwordHash, out byte[] passwordSalt)
+        private static void CreatePasswordHash(string password, out byte[] passwordHash, out byte[] passwordSalt)
         {
             using (var hmac = new HMACSHA512())
             {

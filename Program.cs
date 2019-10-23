@@ -24,8 +24,11 @@ namespace RestApiDating
                 var services = scope.ServiceProvider;
                 try
                 {
+                    // esto se ejecuta cuando se inicia la aplicacion
+                    // si la bd no existe, se crea
                     var context = services.GetRequiredService<DataContext>();
                     context.Database.Migrate();
+                    Seed.SeedUsers(context);
                 }
                 catch (Exception ex)
                 {

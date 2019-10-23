@@ -81,9 +81,6 @@ namespace RestApiDating
             services.AddScoped<IAuthRepository, AuthRepository>();
             services.AddScoped<IDatingRepository, DatingRepository>();
 
-            // seed service
-            services.AddTransient<Seed>();
-
             // Automapper
             services.AddAutoMapper();
 
@@ -95,7 +92,7 @@ namespace RestApiDating
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IHostingEnvironment env, Seed seeder)
+        public void Configure(IApplicationBuilder app, IHostingEnvironment env)
         {
             if (env.IsDevelopment())
             {
@@ -108,7 +105,6 @@ namespace RestApiDating
             }
 
             //app.UseHttpsRedirection();
-            seeder.SeedUsers();
             app.UseCors(x => x
                 .AllowAnyOrigin()
                 .AllowAnyMethod()

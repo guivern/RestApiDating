@@ -35,21 +35,41 @@ namespace RestApiDating
 
         public IConfiguration Configuration { get; }
 
-        // Aquí se inyectan los servicios.
-        public void ConfigureServices(IServiceCollection services)
+        public void ConfigureDevelopmentServices(IServiceCollection services)
         {
-            services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2)
-                // para evitar error de bucle de autoreferencia
-                .AddJsonOptions(opt => opt.SerializerSettings.ReferenceLoopHandling = ReferenceLoopHandling.Ignore);
-                
-            services.AddDbContext<DataContext>(x => {
+            services.AddDbContext<DataContext>(x =>
+            {
                 // UseLazyLoadingProxies() carga las entidades relacionadas automaticamente
                 // con esto ya no es necesario utilizar el metodo include()
                 // pero es necesario agregar 'virtual' a las propiedades relacionales
                 x.UseLazyLoadingProxies();
                 x.UseNpgsql(Configuration.GetConnectionString("DefaultConnection"));
             });
-            
+
+            ConfigureServices(services);
+        }
+
+        public void ConfigureProductionServices(IServiceCollection services)
+        {
+            services.AddDbContext<DataContext>(x =>
+            {
+                // UseLazyLoadingProxies() carga las entidades relacionadas automaticamente
+                // con esto ya no es necesario utilizar el metodo include()
+                // pero es necesario agregar 'virtual' a las propiedades relacionales
+                x.UseLazyLoadingProxies();
+                x.UseMySql(Configuration.GetConnectionString("DefaultConnection"));
+            });
+
+            ConfigureServices(services);
+        }
+
+        // Aquí se inyectan los servicios.
+        public void ConfigureServices(IServiceCollection services)
+        {
+            services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2)
+                // para evitar error de bucle de autoreferencia
+                .AddJsonOptions(opt => opt.SerializerSettings.ReferenceLoopHandling = ReferenceLoopHandling.Ignore);
+
             // CORS
             services.AddCors();
 

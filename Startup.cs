@@ -14,6 +14,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.HttpsPolicy;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Authorization;
+using Microsoft.AspNetCore.SpaServices.AngularCli;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -139,6 +140,17 @@ namespace RestApiDating
                   name: "spa-fallback",
                   defaults: new { controller = "Home", action = "Index" }
                 );
+            });
+
+            string basePath = Configuration.GetSection("ProductionBasePath:path").Value;
+
+            app.Map(basePath, appBuilder =>
+            {
+                appBuilder.UseSpa(spa =>
+                {
+                    spa.Options.DefaultPage = basePath + "/index.html";
+                    spa.Options.DefaultPageStaticFileOptions = new StaticFileOptions { RequestPath = basePath };
+                });
             });
         }
 

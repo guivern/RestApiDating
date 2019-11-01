@@ -101,9 +101,10 @@ namespace RestApiDating
             // AddScoped crea una nueva instancia por cada request
             services.AddScoped<IAuthRepository, AuthRepository>();
             services.AddScoped<IDatingRepository, DatingRepository>();
-
+            
             // Automapper
-            services.AddAutoMapper();
+            ServiceCollectionExtensions.UseStaticRegistration = false;
+            services.AddAutoMapper(typeof(Startup));
 
             // Cloudinary
             services.Configure<CloudinarySettings>(Configuration.GetSection("Cloudinary"));

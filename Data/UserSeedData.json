@@ -628,5 +628,19 @@
                 "descripcion": "Proident culpa laboris cupidatat laborum."
             }
         ]
+    },
+    {
+        "Username": "invitado",
+        "Genero": "Hombre",
+        "FechaNacimiento": "1992-04-28",
+        "Password": "password",
+        "Nombre": "Invitado",
+        "Apellido": "Invitado",
+        "FechaCreacion": "2017-07-05",
+        "Introduccion": "...",
+        "Buscando": "...",
+        "Intereses": "...",
+        "Ciudad": "Stewartville",
+        "Pais": "Bahamas"
     }
 ]
